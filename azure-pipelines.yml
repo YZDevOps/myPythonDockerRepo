@@ -2,8 +2,8 @@
 # Build a Docker image
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
-resources:
-- repo: self
+trigger:
+- master
 
 stages:
 - stage: Build
@@ -18,36 +18,29 @@ stages:
 
     steps:
 
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        buildContext: '$(System.DefaultWorkingDirectory)'
-        repository: '$(AWS_ECR_REPOSITORY_URI)'
-        tags: |
-          $(Build.BuildId)
-          
+  pool:
+  name: Azure Pipelines
+steps:
+- task: Docker@0
+  displayName: 'Build an image'
+  inputs:
+    azureSubscription: 'Azure subscription 1 (eda688a5-68c5-44f4-846d-ccf8e2846a1f)'
+    azureContainerRegistry: '{"loginServer":"yzacr1976.azurecr.io", "id" : "/subscriptions/eda688a5-68c5-44f4-846d-ccf8e2846a1f/resourceGroups/aks_tf_rg/providers/Microsoft.ContainerRegistry/registries/yzacr1976"}'
+    includeLatestTag: true
 
+- task: Docker@0
+  displayName: 'Push an image'
+  inputs:
+    azureSubscription: 'Azure subscription 1 (eda688a5-68c5-44f4-846d-ccf8e2846a1f)'
+    azureContainerRegistry: '{"loginServer":"yzacr1976.azurecr.io", "id" : "/subscriptions/eda688a5-68c5-44f4-846d-ccf8e2846a1f/resourceGroups/aks_tf_rg/providers/Microsoft.ContainerRegistry/registries/yzacr1976"}'
+    action: 'Push an image'
+    includeLatestTag: true
 
-    - task: CopyFiles@2
-      inputs:
-        Contents: 'eks-deploy-from-ecr.yaml'
-        TargetFolder: '$(build.artifactstagingdirectory)'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
-          
-    - task: ECRPushImage@1
-      inputs:
-        awsCredentials: '$(AWS_CREDENTIALS)'
-        regionName: '$(AWS_REGION)'
-        imageSource: 'imagename'
-        sourceImageName: '$(AWS_ECR_REPOSITORY_URI)'
-        sourceImageTag: '$(Build.BuildId)'
-        repositoryName: '$(AWS_ECR_REPOSITORY_NAME)'
-        pushTag: '$(Build.BuildId)'
-        
-        
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    Contents: 'azure-aks.yaml'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
