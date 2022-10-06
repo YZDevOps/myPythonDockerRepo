@@ -16,7 +16,7 @@ stages:
     variables:
        tags: $(Build.BuildId)
 
-    steps:
+
 
   pool:
   name: Azure Pipelines
