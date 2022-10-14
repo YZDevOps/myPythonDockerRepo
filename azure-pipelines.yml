@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '377b118e-9192-4c9a-b975-c11bcbceb7ce'
-  imageRepository: 'webapp'
+  imageRepository: 'yzdevopsmypythondockerrepo'
   containerRegistry: 'clusterregister1976.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
