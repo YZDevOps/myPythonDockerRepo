@@ -1,19 +1,19 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: yzdevopsmypythondockerrepo 
+  name: webapp1 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: yzdevopsmypythondockerrepo
+      app: webapp1
   template:
     metadata:
       labels:
-        app: yzdevopsmypythondockerrepo 
+        app: webapp1 
     spec:
       containers:
-        - name: yzdevopsmypythondockerrepo 
-          image: yzacr1976.azurecr.io/yzdevopsmypythondockerrepo
+        - name: webapp1 
+          image: yzacr1976.azurecr.io/webapp1
           ports:
           - containerPort: 5000
